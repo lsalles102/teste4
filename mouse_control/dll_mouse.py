@@ -28,23 +28,28 @@ MOUSEEVENTF_MIDDLEUP = 0x0040
 MOUSEEVENTF_WHEEL = 0x0800
 MOUSEEVENTF_ABSOLUTE = 0x8000
 
-# Estruturas do Windows
-class POINT(ctypes.Structure):
-    _fields_ = [("x", ctypes.c_long), ("y", ctypes.c_long)]
+# Estruturas do Windows - apenas se ctypes disponível
+if ctypes is not None:
+    class POINT(ctypes.Structure):
+        _fields_ = [("x", ctypes.c_long), ("y", ctypes.c_long)]
 
-class INPUT(ctypes.Structure):
-    class _INPUT(ctypes.Union):
-        class _MOUSEINPUT(ctypes.Structure):
-            _fields_ = [
-                ("dx", ctypes.wintypes.LONG),
-                ("dy", ctypes.wintypes.LONG),
-                ("mouseData", ctypes.wintypes.DWORD),
-                ("dwFlags", ctypes.wintypes.DWORD),
-                ("time", ctypes.wintypes.DWORD),
-                ("dwExtraInfo", ctypes.POINTER(ctypes.wintypes.ULONG))
-            ]
-        mi = _MOUSEINPUT
-    _fields_ = [("type", ctypes.wintypes.DWORD), ("data", _INPUT)]
+    class INPUT(ctypes.Structure):
+        class _INPUT(ctypes.Union):
+            class _MOUSEINPUT(ctypes.Structure):
+                _fields_ = [
+                    ("dx", ctypes.wintypes.LONG),
+                    ("dy", ctypes.wintypes.LONG),
+                    ("mouseData", ctypes.wintypes.DWORD),
+                    ("dwFlags", ctypes.wintypes.DWORD),
+                    ("time", ctypes.wintypes.DWORD),
+                    ("dwExtraInfo", ctypes.POINTER(ctypes.wintypes.ULONG))
+                ]
+            mi = _MOUSEINPUT
+        _fields_ = [("type", ctypes.wintypes.DWORD), ("data", _INPUT)]
+else:
+    # Mock structures para sistemas não-Windows
+    POINT = None
+    INPUT = None
 
 class DLLMouseController:
     """Controlador de mouse usando APIs nativas do Windows"""
@@ -52,20 +57,32 @@ class DLLMouseController:
     def __init__(self):
         """Inicializar controlador DLL"""
         self.logger = logging.getLogger(__name__)
+        self.available = False
         
-        # Bibliotecas do Windows
-        self.user32 = ctypes.windll.user32
-        self.kernel32 = ctypes.windll.kernel32
+        # Verificar se ctypes está disponível (Windows)
+        if ctypes is None:
+            self.logger.warning("DLL Mouse não disponível - sistema não Windows")
+            return
         
-        # Obter dimensões da tela
-        self.screen_width = self.user32.GetSystemMetrics(0)
-        self.screen_height = self.user32.GetSystemMetrics(1)
-        
-        # Configurações de movimento
-        self.movement_speed = 1.0  # Velocidade base
-        self.smooth_movement = True
-        
-        self.logger.info(f"DLL Mouse Controller inicializado. Tela: {self.screen_width}x{self.screen_height}")
+        try:
+            # Bibliotecas do Windows
+            self.user32 = ctypes.windll.user32
+            self.kernel32 = ctypes.windll.kernel32
+            
+            # Obter dimensões da tela
+            self.screen_width = self.user32.GetSystemMetrics(0)
+            self.screen_height = self.user32.GetSystemMetrics(1)
+            
+            # Configurações de movimento
+            self.movement_speed = 1.0  # Velocidade base
+            self.smooth_movement = True
+            
+            self.available = True
+            self.logger.info(f"DLL Mouse Controller inicializado. Tela: {self.screen_width}x{self.screen_height}")
+            
+        except Exception as e:
+            self.logger.error(f"Erro na inicialização DLL Mouse: {e}")
+            self.available = False
         
     def move_to(self, x: int, y: int, duration: float = 0.0):
         """
@@ -75,6 +92,10 @@ class DLLMouseController:
             x, y: Coordenadas de destino
             duration: Duração do movimento em segundos
         """
+        if not self.available:
+            self.logger.warning("DLL Mouse não disponível")
+            return
+            
         try:
             # Garantir que coordenadas estão dentro da tela
             x = max(0, min(x, self.screen_width - 1))

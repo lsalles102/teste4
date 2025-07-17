@@ -49,7 +49,14 @@ class ScreenCaptureDX:
         self.last_time = time.time()
         self.fps = 0
         
+        # Verificar se ctypes está disponível (Windows)
+        if ctypes is None:
+            self.logger.warning("DirectX não disponível - sistema não Windows")
+            self.initialized = False
+            return
+        
         # Tentar inicializar DirectX
+        self.initialized = False
         self._initialize_dx()
         
     def _initialize_dx(self):

@@ -1,0 +1,70 @@
+# ObjectDetectionAssistant - Lista de Dependências
+# Sistema de Detecção de Objetos em Tempo Real com Anti-Detecção
+
+## Dependências Python Core (Já instaladas)
+torch>=2.0.0
+torchvision>=0.15.0
+opencv-python>=4.8.0
+numpy>=1.24.0
+onnxruntime>=1.15.0
+mss>=9.0.0
+pyserial>=3.5
+
+## Dependências Adicionais Recomendadas
+ultralytics  # YOLOv8/v5 oficial
+Pillow       # Processamento de imagens
+scipy        # Computação científica
+pyyaml       # Configurações YAML
+loguru       # Logging avançado
+psutil       # Monitoramento do sistema
+requests     # Requisições HTTP
+cryptography # Criptografia para anti-detecção
+
+## Dependências Específicas do Sistema
+
+### Windows (para funcionalidade completa)
+# pywin32     # APIs do Windows
+# pyautogui   # Controle de mouse/teclado
+# pynput      # Monitoramento de entrada
+
+### Linux
+# python3-tk     # Tkinter (geralmente já incluído)
+# python3-xlib   # Utilitários X11
+
+## Dependências Opcionais para Performance
+
+### NVIDIA GPU (para aceleração CUDA)
+# tensorrt    # Otimização TensorRT
+# cupy        # Arrays CUDA
+
+### Intel (para otimização OpenVINO)
+# openvino    # Intel OpenVINO
+
+### Modelos Alternativos
+# tensorflow  # Para modelos TensorFlow
+# onnx        # Conversão de modelos ONNX
+
+## Comandos de Instalação
+
+### Instalação básica (já feita no Replit):
+# pip install torch torchvision opencv-python onnxruntime mss pyserial numpy
+
+### Instalação completa para Windows:
+# pip install torch torchvision opencv-python onnxruntime mss pyserial numpy pywin32 pyautogui pynput ultralytics Pillow scipy pyyaml loguru psutil requests cryptography
+
+### Instalação para Linux:
+# pip install torch torchvision opencv-python onnxruntime mss pyserial numpy ultralytics Pillow scipy pyyaml loguru psutil requests cryptography
+# sudo apt-get install python3-tk python3-xlib-dev
+
+## Dependências do Sistema (Ubuntu/Debian):
+# sudo apt-get update
+# sudo apt-get install python3-dev python3-pip
+# sudo apt-get install libopencv-dev libxcb1-dev
+# sudo apt-get install xvfb x11-utils  # Para GUI headless
+
+## Estrutura de Arquivos Necessária:
+# models/          # Modelos YOLO (.pt, .weights, .onnx)
+# config/          # Arquivos de configuração
+# logs/            # Logs do sistema
+# screenshots/     # Capturas de debug
+# coco.names       # Classes de objetos (já criado)
