@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ObjectDetectionAssistant - Interface Web</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .card p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .demo-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .demo-canvas {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            height: 300px;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .target {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #ff4444;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            border: 3px solid #fff;
+            box-shadow: 0 0 10px rgba(255,68,68,0.5);
+        }
+
+        .crosshair {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #00ff00;
+            border-radius: 50%;
+            transition: all 0.1s ease;
+            background: rgba(0,255,0,0.1);
+            box-shadow: 0 0 10px rgba(0,255,0,0.5);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(238,90,36,0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(238,90,36,0.4);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            box-shadow: 0 4px 15px rgba(78,205,196,0.3);
+        }
+
+        .btn.secondary:hover {
+            box-shadow: 0 6px 20px rgba(78,205,196,0.4);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .info-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .tech-badge {
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .warning {
+            background: rgba(255,193,7,0.2);
+            border: 1px solid rgba(255,193,7,0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .warning h4 {
+            color: #ffc107;
+            margin-bottom: 10px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 ObjectDetectionAssistant</h1>
+            <p class="subtitle">Sistema Profissional de Detecção de Objetos em Tempo Real</p>
+            <div class="status-badge">Ambiente de Demonstração - Replit</div>
+        </header>
+
+        <div class="dashboard">
+            <div class="card">
+                <h3>🚀 Funcionalidades Principais</h3>
+                <ul class="feature-list">
+                    <li>Detecção de objetos com YOLOv3/v4/v5</li>
+                    <li>Suporte a modelos .weights, .pt, .onnx</li>
+                    <li>Captura de tela MSS e DirectX</li>
+                    <li>Controle via Arduino HID</li>
+                    <li>APIs nativas Windows (DLL)</li>
+                    <li>Interface gráfica completa</li>
+                    <li>Sistema de suavização avançado</li>
+                    <li>Configurações persistentes</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>⚙️ Backends Suportados</h3>
+                <ul class="feature-list">
+                    <li>CPU (OpenCV, PyTorch)</li>
+                    <li>CUDA (NVIDIA GPUs)</li>
+                    <li>DirectML (AMD/Intel)</li>
+                    <li>ONNX Runtime</li>
+                    <li>Fallback automático</li>
+                </ul>
+                <p>O sistema detecta automaticamente o hardware disponível e usa o backend mais adequado.</p>
+            </div>
+
+            <div class="card">
+                <h3>🎮 Métodos de Controle</h3>
+                <ul class="feature-list">
+                    <li>Arduino HID (Hardware)</li>
+                    <li>DLL APIs Nativas</li>
+                    <li>Simulação Software</li>
+                    <li>Movimento suavizado</li>
+                    <li>Predição de trajetória</li>
+                </ul>
+                <p>Múltiplos métodos de controle com fallback automático para máxima compatibilidade.</p>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>🎯 Demonstração de Rastreamento</h3>
+            <p>Esta demonstração simula o comportamento do sistema de rastreamento de objetos:</p>
+            
+            <div class="demo-canvas" id="demoCanvas">
+                <div class="target pulse" id="target"></div>
+                <div class="crosshair" id="crosshair"></div>
+            </div>
+
+            <div class="controls">
+                <button class="btn" onclick="startDemo()">Iniciar Demo</button>
+                <button class="btn secondary" onclick="stopDemo()">Parar</button>
+                <button class="btn secondary" onclick="resetDemo()">Reset</button>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="detectionCount">0</div>
+                    <div class="stat-label">Detecções</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="accuracy">0%</div>
+                    <div class="stat-label">Precisão</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="fps">0</div>
+                    <div class="stat-label">FPS</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="latency">0ms</div>
+                    <div class="stat-label">Latência</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="warning">
+            <h4>⚠️ Aviso Importante</h4>
+            <p>Esta é uma demonstração web do sistema. O aplicativo principal é desenvolvido para Windows com PyQt5 e requer instalação local para funcionalidade completa. A demonstração web serve apenas para visualizar o comportamento do sistema de rastreamento.</p>
+        </div>
+
+        <div class="info-section">
+            <h3>🛠️ Stack Tecnológica</h3>
+            <div class="tech-stack">
+                <span class="tech-badge">Python 3.8+</span>
+                <span class="tech-badge">PyQt5</span>
+                <span class="tech-badge">OpenCV</span>
+                <span class="tech-badge">PyTorch</span>
+                <span class="tech-badge">ONNX Runtime</span>
+                <span class="tech-badge">MSS</span>
+                <span class="tech-badge">PySerial</span>
+                <span class="tech-badge">Win32 APIs</span>
+            </div>
+
+            <h3>📋 Requisitos do Sistema</h3>
+            <div class="card">
+                <ul class="feature-list">
+                    <li>Windows 10 ou superior</li>
+                    <li>Python 3.8+</li>
+                    <li>4GB RAM mínimo (8GB recomendado)</li>
+                    <li>GPU compatível (opcional, mas recomendado)</li>
+                    <li>Arduino (opcional, para controle HID)</li>
+                </ul>
+            </div>
+
+            <h3>🚀 Como Executar</h3>
+            <div class="card">
+                <p><strong>Para executar o sistema completo:</strong></p>
+                <ol style="text-align: left; margin: 15px 0; padding-left: 20px;">
+                    <li>Clone o repositório para um sistema Windows</li>
+                    <li>Instale as dependências: <code>pip install torch opencv-python onnxruntime pyqt5 mss pyserial pywin32 numpy</code></li>
+                    <li>Execute: <code>python main.py</code></li>
+                    <li>Configure seu modelo e parâmetros na interface</li>
+                    <li>Inicie a detecção!</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let demoActive = false;
+        let animationId;
+        let stats = {
+            detections: 0,
+            hits: 0,
+            startTime: null,
+            lastUpdate: 0
+        };
+
+        function getRandomPosition(element, container) {
+            const containerRect = container.getBoundingClientRect();
+            const elementSize = 30; // tamanho do elemento
+            
+            return {
+                x: Math.random() * (container.clientWidth - elementSize),
+                y: Math.random() * (container.clientHeight - elementSize)
+            };
+        }
+
+        function updateTarget() {
+            const target = document.getElementById('target');
+            const canvas = document.getElementById('demoCanvas');
+            const pos = getRandomPosition(target, canvas);
+            
+            target.style.left = pos.x + 'px';
+            target.style.top = pos.y + 'px';
+            
+            stats.detections++;
+            updateStats();
+        }
+
+        function updateCrosshair() {
+            if (!demoActive) return;
+            
+            const crosshair = document.getElementById('crosshair');
+            const target = document.getElementById('target');
+            const canvas = document.getElementById('demoCanvas');
+            
+            // Simular rastreamento com delay e imprecisão
+            const targetRect = target.getBoundingClientRect();
+            const canvasRect = canvas.getBoundingClientRect();
+            
+            const targetX = target.offsetLeft + 15; // centro do target
+            const targetY = target.offsetTop + 15;
+            
+            const currentX = crosshair.offsetLeft + 10;
+            const currentY = crosshair.offsetTop + 10;
+            
+            // Simular suavização e imprecisão
+            const smoothing = 0.15;
+            const noise = 3;
+            
+            const newX = currentX + (targetX - currentX) * smoothing + (Math.random() - 0.5) * noise;
+            const newY = currentY + (targetY - currentY) * smoothing + (Math.random() - 0.5) * noise;
+            
+            crosshair.style.left = (newX - 10) + 'px';
+            crosshair.style.top = (newY - 10) + 'px';
+            
+            // Verificar acerto
+            const distance = Math.sqrt((newX - targetX) ** 2 + (newY - targetY) ** 2);
+            if (distance < 20) {
+                stats.hits++;
+                updateTarget(); // Mover target quando atingido
+            }
+            
+            // Atualizar FPS
+            const now = Date.now();
+            if (now - stats.lastUpdate > 100) {
+                const fps = Math.floor(60 + Math.random() * 10); // Simular 60-70 FPS
+                document.getElementById('fps').textContent = fps;
+                
+                const latency = Math.floor(10 + Math.random() * 20); // Simular 10-30ms
+                document.getElementById('latency').textContent = latency + 'ms';
+                
+                stats.lastUpdate = now;
+            }
+            
+            animationId = requestAnimationFrame(updateCrosshair);
+        }
+
+        function updateStats() {
+            document.getElementById('detectionCount').textContent = stats.detections;
+            
+            const accuracy = stats.detections > 0 ? Math.floor((stats.hits / stats.detections) * 100) : 0;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+        }
+
+        function startDemo() {
+            if (demoActive) return;
+            
+            demoActive = true;
+            stats.startTime = Date.now();
+            
+            // Posicionar elementos inicialmente
+            const canvas = document.getElementById('demoCanvas');
+            const target = document.getElementById('target');
+            const crosshair = document.getElementById('crosshair');
+            
+            const targetPos = getRandomPosition(target, canvas);
+            target.style.left = targetPos.x + 'px';
+            target.style.top = targetPos.y + 'px';
+            
+            crosshair.style.left = '10px';
+            crosshair.style.top = '10px';
+            
+            // Iniciar animação
+            updateCrosshair();
+            
+            // Mover target periodicamente
+            setInterval(() => {
+                if (demoActive) {
+                    updateTarget();
+                }
+            }, 3000);
+        }
+
+        function stopDemo() {
+            demoActive = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        function resetDemo() {
+            stopDemo();
+            
+            stats = {
+                detections: 0,
+                hits: 0,
+                startTime: null,
+                lastUpdate: 0
+            };
+            
+            updateStats();
+            document.getElementById('fps').textContent = '0';
+            document.getElementById('latency').textContent = '0ms';
+            
+            // Reset posições
+            const target = document.getElementById('target');
+            const crosshair = document.getElementById('crosshair');
+            
+            target.style.left = '50px';
+            target.style.top = '50px';
+            crosshair.style.left = '10px';
+            crosshair.style.top = '10px';
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            resetDemo();
+            
+            // Auto-start demo após 2 segundos
+            setTimeout(() => {
+                startDemo();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

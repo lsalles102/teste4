@@ -1,0 +1,109 @@
+{
+    "application": {
+        "name": "ObjectDetectionAssistant",
+        "version": "1.0.0",
+        "debug_mode": false,
+        "auto_save_config": true
+    },
+    "model": {
+        "model_path": "",
+        "names_path": "models/coco.names",
+        "backend": "CPU",
+        "auto_detect_type": true,
+        "fallback_to_pretrained": true
+    },
+    "detection": {
+        "confidence_threshold": 0.5,
+        "nms_threshold": 0.4,
+        "target_class": "person",
+        "target_classes": ["person"],
+        "fov_percentage": 80,
+        "max_detections": 10,
+        "detection_frequency": 30
+    },
+    "capture": {
+        "method": "MSS",
+        "monitor_index": 0,
+        "region": null,
+        "max_fps": 30,
+        "auto_resize": true,
+        "resize_factor": 1.0
+    },
+    "movement": {
+        "method": "Software",
+        "com_port": "COM3",
+        "baud_rate": 9600,
+        "smoothing_factor": 0.5,
+        "movement_speed": 1.0,
+        "enable_prediction": false,
+        "prediction_time": 0.016
+    },
+    "smoothing": {
+        "window_size": 5,
+        "enable_acceleration_smoothing": true,
+        "enable_jitter_reduction": true,
+        "jitter_threshold": 2.0,
+        "max_velocity": 1000.0,
+        "easing_function": "ease_in_out_cubic"
+    },
+    "interface": {
+        "theme": "dark",
+        "language": "pt-BR",
+        "auto_start": false,
+        "minimize_to_tray": true,
+        "show_fps": true,
+        "show_debug_info": false
+    },
+    "security": {
+        "require_confirmation": true,
+        "safe_mode": true,
+        "max_click_rate": 10,
+        "movement_bounds_check": true
+    },
+    "performance": {
+        "use_gpu_acceleration": false,
+        "memory_limit_mb": 1024,
+        "thread_pool_size": 4,
+        "enable_profiling": false
+    },
+    "logging": {
+        "level": "INFO",
+        "max_log_files": 5,
+        "max_log_size_mb": 10,
+        "log_to_file": true,
+        "log_to_console": true
+    },
+    "arduino": {
+        "connection_timeout": 5.0,
+        "max_retries": 3,
+        "retry_delay": 1.0,
+        "command_queue_size": 100,
+        "heartbeat_interval": 5.0
+    },
+    "hotkeys": {
+        "toggle_detection": "F1",
+        "emergency_stop": "F12",
+        "take_screenshot": "F9",
+        "show_hide_interface": "F2"
+    },
+    "calibration": {
+        "screen_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 1920,
+            "bottom": 1080
+        },
+        "dead_zone": {
+            "enabled": false,
+            "radius": 50
+        },
+        "mouse_sensitivity": 1.0
+    },
+    "advanced": {
+        "experimental_features": false,
+        "use_directx_capture": false,
+        "multi_threading": true,
+        "async_processing": true,
+        "memory_optimization": true
+    }
+}
