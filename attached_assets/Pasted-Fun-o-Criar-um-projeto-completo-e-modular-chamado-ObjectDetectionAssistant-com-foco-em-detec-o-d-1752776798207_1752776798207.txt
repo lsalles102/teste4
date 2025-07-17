@@ -1,0 +1,133 @@
+Função: Criar um projeto completo e modular chamado ObjectDetectionAssistant, com foco em detecção de objetos em tempo real, captura de tela em fullscreen, e movimentação automatizada. O projeto deve ser otimizado para diferentes plataformas e configurações de hardware (sem CUDA, com DirectML, com suporte a dispositivos HID).
+
+📌 Detalhamento do Projeto
+1. Detecção de Objetos com Modelos Flexíveis
+O projeto deve ser capaz de carregar e usar diferentes modelos de detecção de objetos, incluindo:
+
+.weights e .cfg (como YOLOv3/v4 usando OpenCV)
+
+.pt (modelos PyTorch, como YOLOv5 ou outros)
+
+.onnx (modelos compatíveis com ONNX Runtime)
+
+Deve haver um mecanismo para detectar automaticamente qual tipo de modelo está sendo carregado e usar a biblioteca apropriada (OpenCV para .weights, PyTorch para .pt, onnxruntime para .onnx).
+
+O projeto deve carregar nomes de objetos a partir de um arquivo .names, que pode ser customizado para diferentes casos de uso.
+
+2. Captura da Tela (Modo Fullscreen)
+A captura de tela deve ser feita de maneira eficiente e funcional, usando dois métodos possíveis:
+
+mss: para captura simples de tela (modo de janela ou fullscreen).
+
+DirectX Screen Duplication: para captura de tela em tempo real em jogos, quando disponível, para melhorar a performance e evitar detecção de métodos comuns de captura.
+
+O projeto deve permitir ao usuário escolher o método de captura via a interface gráfica (GUI).
+
+3. Movimentação Automatizada com Dispositivos HID ou DLL
+Dois modos de movimentação automatizada devem ser implementados:
+
+Usando dispositivos HID (como Arduino): O Arduino pode se comportar como um dispositivo de entrada, movendo o cursor automaticamente com base na posição do objeto detectado.
+
+Simulação de movimentação via DLL: Se o Arduino não estiver disponível, o sistema deve ser capaz de simular o movimento do cursor usando APIs nativas como mouse_event ou SendInput.
+
+O projeto deve permitir ao usuário escolher o método de movimentação via GUI.
+
+4. Interface Gráfica (GUI)
+A GUI deve ser simples e funcional, permitindo ao usuário interagir facilmente com o sistema.
+
+Toggle para ativar/desativar a detecção e movimentação automatizada.
+
+Sliders para ajustar parâmetros como:
+
+FOV (campo de visão da detecção)
+
+Suavização da movimentação
+
+Nível de confiança mínima para a detecção de objetos
+
+Dropdowns para selecionar:
+
+Tipo de backend para o modelo (como CPU, CUDA, DirectML)
+
+Método de movimentação (HID (Arduino), DLL, Simulação)
+
+Método de captura de tela (MSS, DirectX)
+
+Campos de entrada para configurar parâmetros, como porta COM para o Arduino.
+
+Botão de ação para iniciar o processo de detecção e movimentação.
+
+5. Arquitetura Modular
+O código deve ser modular e organizado da seguinte maneira:
+
+arduino
+Copiar
+Editar
+ObjectDetectionAssistant/
+├── main.py
+├── gui/
+│   └── app.py
+├── detector/
+│   ├── yolov3_darknet.py
+│   ├── yolov5_pytorch.py
+│   ├── yolov5_onnx.py
+│   └── detector_loader.py
+├── capture/
+│   ├── capture_mss.py
+│   └── capture_dx.py
+├── mouse_control/
+│   ├── arduino.py
+│   ├── dll_mouse.py
+│   └── software.py
+├── models/
+│   ├── yolov3.cfg
+│   ├── yolov3.weights
+│   ├── yolov5.onnx
+│   ├── coco.names
+├── utils/
+│   └── smoothing.py
+├── config/
+│   └── settings.json
+6. Segurança e Performance
+O sistema deve ser independente de processos de jogos e não deve injetar código ou manipular diretamente processos de jogos.
+
+A captura de tela deve ser feita fora do processo de jogo, garantindo que não haja interferência ou riscos de violação de regras de uso.
+
+A comunicação deve ser feita externamente, utilizando apenas dispositivos HID (Arduino) ou APIs nativas como mouse_event ou SendInput.
+
+7. Requisitos de Sistema
+Bibliotecas Python necessárias:
+
+torch
+
+onnxruntime
+
+opencv-python
+
+pyserial
+
+pywin32
+
+numpy
+
+mss
+
+PyQt5 ou Tkinter
+
+Plataformas compatíveis:
+
+Windows 10 ou superior
+
+Suporte a Python 3.8 ou superior
+
+Compatibilidade com placas de vídeo AMD, Intel e NVIDIA (sem necessidade de CUDA, mas com suporte para DirectML quando disponível)
+
+8. Testes e Modos de Fallback
+Se CUDA estiver disponível, o sistema deve usar aceleração automática.
+
+Caso contrário, o sistema deve fallback para CPU ou DirectML, garantindo que funcione em qualquer sistema.
+
+Se o Arduino não estiver conectado, o sistema deve notificar o usuário e sugerir uma alternativa de movimentação via DLL ou software.
+
+🎯 Objetivo do Projeto:
+Desenvolver um assistente de detecção de objetos independente de plataforma, com captura de tela otimizada, movimentação automatizada via Arduino ou DLL, e interface gráfica simples para controle completo.
